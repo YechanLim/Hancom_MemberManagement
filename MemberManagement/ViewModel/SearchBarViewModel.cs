@@ -9,12 +9,13 @@ using MemberManagement.Command;
 using MemberManagement.Model;
 namespace MemberManagement
 {
-    public class SearchBar : ViewModelBase
+    public class SearchBarViewModel : ViewModelBase
     {
-        public SearchBar()
+        const string searchResultText = "검색 결과가 없습니다.";
+        public SearchBarViewModel()
         {
             isFocused = false;
-            searchBarVisibility = Visibility.Hidden;
+            searchResultVisibility = Visibility.Hidden;
         }
 
         private string searchText;
@@ -36,36 +37,33 @@ namespace MemberManagement
             set
             {
                 isFocused = value;
-                if(isFocused == null)
+
+                if (isFocused == null)
                 {
-                    Console.WriteLine("isFocused == null");
                     return;
                 }
 
-                Console.WriteLine("isFocus : " + isFocused);
                 if (isFocused)
                 {
-                    SearchBarVisibility = Visibility.Visible;
+                    SearchResultVisibility = Visibility.Visible;
                 }
                 else
                 {
-                    SearchBarVisibility = Visibility.Hidden;
+                    SearchResultVisibility = Visibility.Hidden;
                 }
 
                 OnPropertyChanged("IsFocused");
-                Console.WriteLine("isFocused value changed");
             }
         }
 
-        private Visibility searchBarVisibility;
-        public Visibility SearchBarVisibility
+        private Visibility searchResultVisibility;
+        public Visibility SearchResultVisibility
         {
-            get { return searchBarVisibility; }
+            get { return searchResultVisibility; }
             set
             {
-                searchBarVisibility = value;
-                OnPropertyChanged("SearchBarVisibility");
-                Console.WriteLine("searchbarvisibility value changed");
+                searchResultVisibility = value;
+                OnPropertyChanged("SearchResultVisibility");
             }
         }
 
@@ -103,20 +101,21 @@ namespace MemberManagement
             }
         }
 
-        private ICommand keyUp;
-        public ICommand KeyUp
+        private ICommand returnKeyUp;
+        public ICommand ReturnKeyUp
         {
-            get { return (this.keyUp) ?? (this.keyUp = new DelegateCommand(KeyUpFunction)); }
+            get { return (this.returnKeyUp) ?? (this.returnKeyUp = new DelegateCommand(returnKeyUpFunction)); }
         }
-        private void KeyUpFunction()
+        private void returnKeyUpFunction()
         {
             IEnumerable<MemberModel> searchedMember;
-            if( (searchedMember = MemberModels.members.Where(member => member.Name.ToUpper().Equals(searchText.ToUpper()))).Count() != 0 )
+            if ((searchedMember = MemberModels.members.Where(member => member.Name.ToUpper().Equals(searchText.ToUpper()))).Count() != 0)
             {
                 SelectedMember = searchedMember.First();
+                return;
             }
+            MessageBoxService.MessageBoxServiceShow(searchResultText);
         }
-
 
         private ICommand gotFocus;
         public ICommand GotFocus

@@ -70,17 +70,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="SearchBar.cs" />
-    <Compile Include="TextInitializer.cs" />
+    <Compile Include="ViewModel\SearchBarViewModel.cs" />
     <Compile Include="Command\DelegateCommand.cs" />
     <Compile Include="Command\RelayCommand.cs" />
     <Compile Include="Command\ViewModelBase.cs" />
     <Compile Include="MessageBoxService.cs" />
     <Compile Include="Model\MemberModel.cs" />
     <Compile Include="Model\TreeItemModel.cs" />
-    <Compile Include="MemberAdder.cs" />
-    <Compile Include="SelectedItemDisplayer.cs" />
-    <Compile Include="TreeViewInitializer.cs" />
+    <Compile Include="TreeViewMaker.cs" />
     <Compile Include="ViewModel\MemberManagementViewModel.cs" />
     <Compile Include="View\MemberManagementView.xaml.cs">
       <DependentUpon>MemberManagementView.xaml</DependentUpon>

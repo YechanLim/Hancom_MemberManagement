@@ -16,7 +16,9 @@ namespace MemberManagement.Model
             {
                 new MemberModel(){Name = "Yechan", Address = "야탑", Age = "27", DateOfBirth = "1995.04.26", PhoneNum = "010-332x-217x", Remark = "게임 잘함 \n좋아하는 영화: August Rush, Good Will Hunting", Sex = "남"},
                 new MemberModel(){Name = "Potato", Address = "강남", Age = "50", DateOfBirth = "1973.01.16", PhoneNum = "010-332x-217x", Remark = "nothing", Sex = "남"},
-                new MemberModel(){Name = "Carrot", Address = "제주도", Age = "12", DateOfBirth = "2010.01.16", PhoneNum = "010-332x-217x", Remark = "잼민", Sex = "여"}
+                new MemberModel(){Name = "Carrot", Address = "제주도", Age = "12", DateOfBirth = "2010.01.16", PhoneNum = "010-332x-217x", Remark = "잼민", Sex = "여"},
+                new MemberModel(){Name = "Rice", Address = "거제", Age = "33", DateOfBirth = "1995.04.26", PhoneNum = "010-332x-217x", Remark = "게임 잘함 \n좋아하는 영화: August Rush, Good Will Hunting", Sex = "남"},
+                new MemberModel(){Name = "RiceBowl", Address = "야탑", Age = "27", DateOfBirth = "1995.04.26", PhoneNum = "010-332x-217x", Remark = "게임 잘함 \n좋아하는 영화: August Rush, Good Will Hunting", Sex = "남"},
             });
     }
 
@@ -177,6 +179,20 @@ namespace MemberManagement.Model
             }
         }
 
+        public string EnableValidationAndGetError()
+        {
+            this.allowValidation = true;
+            string error = this.Error;
+            Console.WriteLine("error : " + error);
+            OnPropertyChanged("");
+
+            if (!string.IsNullOrEmpty(error))
+            {
+                return error;
+            }
+            return null;
+        }
+
         public void Clear()
         {
             allowValidation = false;
@@ -199,5 +215,8 @@ namespace MemberManagement.Model
             PhoneNum = sourceMemberModel.PhoneNum;
             Remark = sourceMemberModel.Remark;
         }
+
+
+
     }
 }

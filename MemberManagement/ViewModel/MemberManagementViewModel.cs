@@ -22,21 +22,17 @@ namespace MemberManagement.ViewModel
         public MemberModel RegisterPageMemberModel { get; set; }
         public MemberModel ListPageMemberModel { get; set; }
 
-
-        private TreeItemModel treeItemModel;
         public static TreeItemModel TreeItemModel { get; set; }
 
-        public SearchBar SearchBar { get; set; }
+        public SearchBarViewModel SearchBar { get; set; }
 
-        private MemberAdder memberAdder;
         public MemberManagementViewModel()
         {
             RegisterPageMemberModel = new MemberModel();
             ListPageMemberModel = new MemberModel();
             TreeItemModel = new TreeItemModel();
-            memberAdder = new MemberAdder(RegisterPageMemberModel, TreeItemModel);
-            SearchBar = new SearchBar();
-            TreeViewInitializer.InitializeTreeView(TreeItemModel);
+            SearchBar = new SearchBarViewModel();
+            TreeViewMaker.InitializeTreeView(TreeItemModel);
         }
 
         private ICommand registerCommand;
@@ -47,12 +43,25 @@ namespace MemberManagement.ViewModel
 
         private void Register()
         {
-            string error = memberAdder.EnableValidationAndGetError();
-            OnPropertyChanged("");
+            string error = RegisterPageMemberModel.EnableValidationAndGetError();
 
-            if (error != null) return;
+            if (error != null)
+            {
+                return;
+            }
 
-            memberAdder.AddMember();
+            MemberModel tempMemberModel = new MemberModel();
+            tempMemberModel.CopyFrom(RegisterPageMemberModel);
+
+            MemberModels.members.Add(tempMemberModel);
+
+            TreeCategory parent = TreeViewMaker.FindNewParent(TreeItemModel.TreeCategories, RegisterPageMemberModel.Age);
+
+            if (parent != null)
+            {
+                parent.Children.Add(tempMemberModel);
+            }
+
             RegisterPageMemberModel.Clear();
             MessageBoxService.MessageBoxServiceShow(registerCompletedMessage);
         }
@@ -77,7 +86,7 @@ namespace MemberManagement.ViewModel
         }
         private void ShowMemberList(object selectedMenuItem)
         {
-            var selectedMemberModel = selectedMenuItem as MemberModel;
+            MemberModel selectedMemberModel = selectedMenuItem as MemberModel;
             if (selectedMemberModel == null)
             {
                 return;
@@ -93,10 +102,12 @@ namespace MemberManagement.ViewModel
         private void Delete(object selectedMenuItem)
         {
             MemberModel selectedMemberModel = selectedMenuItem as MemberModel;
+
             if (selectedMemberModel == null)
             {
                 return;
             }
+
             MessageBoxResult result = MessageBoxService.MessageBoxServiceShow(deleteConfirmMessage, deleteConfirmCaption);
 
             if (result == MessageBoxResult.No)
@@ -104,15 +115,10 @@ namespace MemberManagement.ViewModel
                 return;
             }
 
-            TreeCategory treeCategory = TreeViewInitializer.FindNewParent(TreeItemModel, Int32.Parse(selectedMemberModel.Age));
-            if (treeCategory == null)
-            {
-                return;
-            }
+            TreeCategory treeCategory = TreeViewMaker.FindNewParent(TreeItemModel.TreeCategories, selectedMemberModel.Age);
             treeCategory.Children.Remove(selectedMemberModel);
             MemberModels.members.Remove(selectedMemberModel);
-            TextInitializer.InitializeWholeText(ListPageMemberModel);
-            OnPropertyChanged("");
+            ListPageMemberModel.Clear();
         }
 
         private ICommand applyCommand;
@@ -123,9 +129,22 @@ namespace MemberManagement.ViewModel
         private void Apply(object selectedMenuItem)
         {
             MemberModel selectedModel = selectedMenuItem as MemberModel;
+
+            if (selectedModel == null)
+            {
+                return;
+            }
+
             selectedModel.Age = ListPageMemberModel.Age;
+            string error = ListPageMemberModel.EnableValidationAndGetError();
+
+            if (error != null)
+            {
+                return;
+            }
+
             TreeCategory oldParent = selectedModel.Parent;
-            TreeCategory newParent = TreeViewInitializer.FindNewParent(TreeItemModel, Int32.Parse(ListPageMemberModel.Age));
+            TreeCategory newParent = TreeViewMaker.FindNewParent(TreeItemModel.TreeCategories, ListPageMemberModel.Age);
             if (oldParent.Equals(newParent))
             {
                 return;
@@ -135,6 +154,5 @@ namespace MemberManagement.ViewModel
             newParent.IsExpanded = true;
             selectedModel.IsSelected = true;
         }
-
     }
 }

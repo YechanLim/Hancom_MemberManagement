@@ -41,7 +41,7 @@
                             <AdornedElementPlaceholder>
                                 <Border BorderBrush="Red" BorderThickness="0.6"/>
                             </AdornedElementPlaceholder>
-                            <TextBlock FontSize="9" Foreground="Red" Text="필수 항목입니다!"></TextBlock>
+                            <TextBlock FontSize="9" Foreground="Red" Text="입력을 확인해주세요."></TextBlock>
                         </StackPanel>
                     </ControlTemplate>
                 </Setter.Value>
@@ -56,9 +56,10 @@
     </UserControl.Resources>
 
 
-    <Grid Background="White" ShowGridLines="True">
+    <Grid Background="White">
 
         <Grid x:Name="RegisterPage" Grid.Column="0" Margin="50,0,50,0">
+            
             <TextBlock HorizontalAlignment="Center" FontSize="15">
                 회원 정보 입력
             </TextBlock>
@@ -160,12 +161,11 @@
             </Grid>
 
             <Grid x:Name="RightSide" Grid.Column="1" Margin="10,0,0,0">
-                <TextBlock FontSize="15" Grid.ColumnSpan="1">회원 목록:</TextBlock>
-                
+                <TextBlock Grid.Column="1" Margin="30,0,0,0" FontSize ="15"> 검색:</TextBlock>
+
                 <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" HorizontalAlignment="Right" Margin="0,0,20,0">
-                    <TextBlock  Height="25" Margin="0,5,10,0" >검색:</TextBlock>
                     <StackPanel Orientation="Vertical">
-                    <TextBox  Width="130" Height="25" Text="{Binding SearchBar.SearchText, UpdateSourceTrigger=PropertyChanged}">
+                    <TextBox Width="160" Height="25" Text="{Binding SearchBar.SearchText, UpdateSourceTrigger=PropertyChanged}">
                             <i:Interaction.Triggers>
                                 <i:EventTrigger EventName="GotFocus">
                                     <i:InvokeCommandAction
@@ -177,15 +177,14 @@
                                 </i:EventTrigger>
                             </i:Interaction.Triggers>
                             <TextBox.InputBindings>
-                                <KeyBinding Command="{Binding SearchBar.KeyUp}" Key="Return">
-                                </KeyBinding>
+                                <KeyBinding Command="{Binding SearchBar.ReturnKeyUp}" Key="Return"/>
                             </TextBox.InputBindings>
                     </TextBox>
                         <ListBox ItemsSource="{Binding SearchBar.FilteredMembers}" SelectedItem="{Binding SearchBar.SelectedMember}"
-                                 Width="130" Height="80"
+                                 Width="160" Height="80"
                                  ScrollViewer.VerticalScrollBarVisibility="Visible"
                                  DisplayMemberPath="Name" 
-                                 Visibility="{Binding SearchBar.SearchBarVisibility}"/>
+                                 Visibility="{Binding SearchBar.SearchResultVisibility}"/>
                     </StackPanel>
                 </StackPanel>
                     <Border Margin="0,0,20,0" Grid.Row="1" Grid.RowSpan="2" Grid.ColumnSpan="3" BorderBrush="Black" BorderThickness="0.5"/>
@@ -206,7 +205,8 @@
                     <TextBlock Style="{StaticResource CategoryText_ListPage}" 
                                Text="{Binding ListPageMemberModel.Address, Mode=TwoWay}"></TextBlock>
                     <TextBox   Margin="20,13,0,0" Width="120" HorizontalAlignment="Left" 
-                               Text="{Binding ListPageMemberModel.Age, Mode=TwoWay}"></TextBox>
+                               Style="{StaticResource InputTextBox }"
+                               Text="{Binding ListPageMemberModel.Age, Mode=TwoWay , ValidatesOnDataErrors=True}"></TextBox>
                     <TextBlock Style="{StaticResource CategoryText_ListPage}" 
                                Text="{Binding ListPageMemberModel.Sex, Mode=TwoWay}"></TextBlock>
                     <TextBlock Style="{StaticResource CategoryText_ListPage}" 
